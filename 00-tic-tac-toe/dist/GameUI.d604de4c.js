@@ -147,30 +147,49 @@ function () {
   };
 
   Game.prototype.getWinner = function () {
-    if (this.cells[0] === this.cells[1] && this.cells[1] === this.cells[2] && this.cells[0] !== 'O') {
+    if (this.cells[0] === this.cells[1] && this.cells[1] === this.cells[2] && this.cells[0] !== '-') {
       return this.cells[0];
+    } else if (this.cells[3] === this.cells[4] && this.cells[4] === this.cells[5] && this.cells[3] !== '-') {
+      return this.cells[3];
+    } else if (this.cells[6] === this.cells[7] && this.cells[7] === this.cells[8] && this.cells[6] !== '-') {
+      return this.cells[6];
+    } else if (this.cells[0] === this.cells[4] && this.cells[4] === this.cells[8] && this.cells[0] !== '-') {
+      return this.cells[0];
+    } else if (this.cells[6] === this.cells[4] && this.cells[4] === this.cells[2] && this.cells[6] !== '-') {
+      return this.cells[6];
+    } else if (this.cells[0] === this.cells[3] && this.cells[3] === this.cells[6] && this.cells[0] !== '-') {
+      return this.cells[0];
+    } else if (this.cells[1] === this.cells[4] && this.cells[4] === this.cells[7] && this.cells[1] !== '-') {
+      return this.cells[1];
+    } else if (this.cells[2] === this.cells[5] && this.cells[5] === this.cells[8] && this.cells[2] !== '-') {
+      return this.cells[2];
     }
 
-    if (this.cells[6] === this.cells[7] && this.cells[7] === this.cells[8]) {
-      return this.cells[8];
-    }
-
-    return "-";
+    return '-';
   };
 
   Game.prototype.isTie = function () {
+    if (this.cells[0] !== '-' && this.cells[1] !== '-' && this.cells[2] !== '-' && this.cells[3] !== '-' && this.cells[4] !== '-' && this.cells[5] !== '-' && this.cells[6] !== '-' && this.cells[7] !== '-' && this.cells[8] !== '-' && this.getWinner() !== 'X' && this.getWinner() !== 'O') {
+      return true;
+    }
+
     return false;
   };
 
   Game.prototype.onClick = function (i) {
-    if (this.cells[i] != '-') {
-      this.getTurn();
+    if (this.cells[i] !== '-') {
+      return;
     }
+
+    this.cells[i] = this.getTurn();
   };
 
   Game.prototype.restart = function () {
-    this.cells = ["-", "-", "-", "-", "-", "-", "-", "-", "-"];
-    console.log("restarting");
+    if (this.getWinner() === 'X' || this.getWinner() === 'O' || this.isTie()) {
+      console.log("restarting");
+      this.cells = ["-", "-", "-", "-", "-", "-", "-", "-", "-"];
+      this.getCells();
+    }
   };
 
   return Game;
@@ -212,10 +231,12 @@ var draw = function draw(game) {
     info.innerText = "It's a tie!";
     button.removeAttribute("disabled");
     button.className = "button button-hoverable";
+    game.restart();
   } else if (game.getWinner() !== "-") {
     info.innerText = "Nice, " + game.getWinner() + " won";
     button.removeAttribute("disabled");
     button.className = "button button-hoverable";
+    game.restart();
   } else {
     info.innerText = "It's " + game.getTurn() + " turn";
     button.setAttribute("disabled", "true");
@@ -252,7 +273,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56885" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55164" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
